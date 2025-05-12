@@ -15,4 +15,7 @@ float getValue_tdsSensor();
 // If you measure water temperature elsewhere, call this:
 void setTemp_tdsSensor(float celsius);
 
+//*Gets Median Number from the number of samples
+int getMedianNum(int bArray[], int iFilterLen);
+
 #endif // TDS_SENSOR_H

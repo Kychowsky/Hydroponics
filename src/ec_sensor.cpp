@@ -14,14 +14,14 @@ static float    _lastTds;
 
 
 //* Initalize all static values/arrays
-void init_tdsSensor(uint8_t analogPin, float VREF = 5.0, uint8_t sampleCount = 30, float temperature){
+void init_tdsSensor(uint8_t analogPin, float VREF = 5.0, uint8_t sampleCount = 30){
   _pin         = analogPin;
   _vref        = VREF;
   _sampleCount       = sampleCount;
   _analogBuffer      = (int*)malloc(_sampleCount * sizeof(int));
   _analogBufferTemp  = (int*)malloc(_sampleCount * sizeof(int));
   _analogBufferIndex = 0;
-  _temperature = temperature;
+  _temperature = 25.0;
   pinMode(_pin, INPUT);
 }
 
@@ -73,27 +73,24 @@ float getValue_tdsSensor() {
 }
 
 
-int getMedianNum(int bArray[], int iFilterLen) 
-{
-      int bTab[iFilterLen];
-      for (byte i = 0; i<iFilterLen; i++)
-      bTab[i] = bArray[i];
-      int i, j, bTemp;
-      for (j = 0; j < iFilterLen - 1; j++) 
-      {
-      for (i = 0; i < iFilterLen - j - 1; i++) 
-          {
-        if (bTab[i] > bTab[i + 1]) 
-            {
+//* getMedianNum Function within Scope
+int getMedianNum(int bArray[], int iFilterLen) {
+  int bTab[iFilterLen];
+  for (byte i = 0; i < iFilterLen; i++)
+    bTab[i] = bArray[i];
+  int i, j, bTemp;
+  for (j = 0; j < iFilterLen - 1; j++) {
+    for (i = 0; i < iFilterLen - j - 1; i++) {
+      if (bTab[i] > bTab[i + 1]) {
         bTemp = bTab[i];
-            bTab[i] = bTab[i + 1];
+        bTab[i] = bTab[i + 1];
         bTab[i + 1] = bTemp;
-         }
       }
-      }
-      if ((iFilterLen & 1) > 0)
+    }
+  }
+  if ((iFilterLen & 1) > 0)
     bTemp = bTab[(iFilterLen - 1) / 2];
-      else
+  else
     bTemp = (bTab[iFilterLen / 2] + bTab[iFilterLen / 2 - 1]) / 2;
-      return bTemp;
+  return bTemp;
 }

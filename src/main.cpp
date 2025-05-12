@@ -21,8 +21,16 @@ void loop() {
   float tempC = readTempC();
   setTemp_tdsSensor(tempC);
   float tdsSensorReading = getValue_tdsSensor();
+  
+  //*test code 
+  Serial.print("Temp Value: ");
+  Serial.print(tempC, 0);
+  Serial.println(" C");
 
-
+  Serial.print("TDS Value: ");
+  Serial.print(tdsSensorReading, 0);
+  Serial.println(" ppm");
+  delay(2000);
 
 
 }
