@@ -16,7 +16,7 @@ Features:
   A interactive Web Page to allow for manual input
   Data Retrieval via WIFI/MQTT for analysis
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 Hope to add Machine Learning for Growth Optimization
   
