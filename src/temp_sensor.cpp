@@ -8,7 +8,7 @@
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 
-void initTempSensor() {
+void init_tempSensor() {
   sensors.begin();
 }
 

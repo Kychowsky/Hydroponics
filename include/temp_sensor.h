@@ -1,7 +1,7 @@
 #ifndef TEMP_SENSOR_H
 #define TEMP_SENSOR_H
 
-void initTempSensor();
+void init_tempSensor();
 float readTempC();
 
 #endif

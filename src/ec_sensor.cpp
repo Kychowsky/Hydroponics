@@ -1,63 +1,78 @@
-#include <Arduino.h>
-#define TdsSensorPin A1
-#define SCOUNT  30           // sum of sample point
-int analogBuffer[SCOUNT];    // store the analog value in the array, read from ADC
-int analogBufferTemp[SCOUNT];
-int analogBufferIndex = 0,copyIndex = 0;
-float averageVoltage = 0,tdsValue = 0,temperature = 25;
+#include "tds_sensor.h"
 
-void init_tdsSensor(uint8_t analogPin, float vref = 5.0, uint8_t sampleCount = 30);
-
-
-
-
+// configuration & buffers
+static uint8_t  _pin;
+static float    _vref;
+static uint8_t  _sampleCount;
+static int    * _analogBuffer;
+static int    * _analogBufferTemp;
+static uint8_t  _analogBufferIndex;
+static float    _temperature;
+static float    _lastTds;
 
 
 
 
-
-
-
-
-
-
-
-
-void setup()
-{
-    Serial.begin(9600);
-    pinMode(TdsSensorPin,INPUT);
+//* Initalize all static values/arrays
+void init_tdsSensor(uint8_t analogPin, float VREF = 5.0, uint8_t sampleCount = 30, float temperature){
+  _pin         = analogPin;
+  _vref        = VREF;
+  _sampleCount       = sampleCount;
+  _analogBuffer      = (int*)malloc(_sampleCount * sizeof(int));
+  _analogBufferTemp  = (int*)malloc(_sampleCount * sizeof(int));
+  _analogBufferIndex = 0;
+  _temperature = temperature;
+  pinMode(_pin, INPUT);
 }
 
-void loop()
-{
-   static unsigned long analogSampleTimepoint = millis();
-   if(millis()-analogSampleTimepoint > 40U)     //every 40 milliseconds,read the analog value from the ADC
-   {
-     analogSampleTimepoint = millis();
-     analogBuffer[analogBufferIndex] = analogRead(TdsSensorPin);    //read the analog value and store into the buffer
-     analogBufferIndex++;
-     if(analogBufferIndex == SCOUNT) 
-         analogBufferIndex = 0;
-   }   
-   static unsigned long printTimepoint = millis();
-   if(millis()-printTimepoint > 800U)
-   {
-      printTimepoint = millis();
-      for(copyIndex=0;copyIndex<SCOUNT;copyIndex++)
-        analogBufferTemp[copyIndex]= analogBuffer[copyIndex];
-      averageVoltage = getMedianNum(analogBufferTemp,SCOUNT) * (float)VREF / 1024.0; // read the analog value more stable by the median filtering algorithm, and convert to voltage value
-      float compensationCoefficient=1.0+0.02*(temperature-25.0);    //temperature compensation formula: fFinalResult(25^C) = fFinalResult(current)/(1.0+0.02*(fTP-25.0));
-      float compensationVolatge=averageVoltage/compensationCoefficient;  //temperature compensation
-      tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 255.86*compensationVolatge*compensationVolatge + 857.39*compensationVolatge)*0.5; //convert voltage value to tds value
-      //Serial.print("voltage:");
-      //Serial.print(averageVoltage,2);
-      //Serial.print("V   ");
-      Serial.print("TDS Value:");
-      Serial.print(tdsValue,0);
-      Serial.println("ppm");
-   }
+//*set temp based off outside reading
+void setTemp_tdsSensor(float temp) {
+  _temperature = temp;
 }
+
+void update_tdsSensor() {
+  //* Set Current Timestamp
+  static unsigned long analogSampleTimepoint = millis();
+  static unsigned long analog30SampleTimepoint = millis();
+  
+  //every 40 milliseconds,take ONE sample analog value from the ADC-sensor
+  if(millis()-analogSampleTimepoint > 40U) {
+      analogSampleTimepoint = millis();
+      _analogBuffer[_analogBufferIndex] = analogRead(_pin);
+      if(_analogBufferIndex == _sampleCount) //*reset index
+          _analogBufferIndex = 0;
+    }   
+
+  //every 40 milliseconds,read the analog value from the ADC  
+  if (millis() - analog30SampleTimepoint > 800U){
+    analog30SampleTimepoint = millis();
+
+    // Copy buffer for sorting
+    for (int i = 0; i < _sampleCount; i++)
+    _analogBufferTemp[i] = _analogBuffer[i];  
+
+    // 1) Median filter → removes spikes
+    int medianReading = getMedianNum(_analogBufferTemp, _sampleCount);
+
+    // 2) Convert to voltage
+    float averageVoltage = medianReading * _vref / 1024.0;
+    
+    // 3) Temperature compensation
+    float compensationCoefficient = 1.0 + 0.02 * (_temperature - 25);
+    float compensationVoltage = averageVoltage / compensationCoefficient;
+
+    // 4) TDS conversion (empirical cubic formula) and scaling
+    _lastTds = (133.42 * pow(compensationVoltage, 3)
+    - 255.86 * pow(compensationVoltage, 2)
+    + 857.39 * compensationVoltage) * 0.5; 
+    }
+}
+
+float getValue_tdsSensor() {
+  return _lastTds;
+}
+
+
 int getMedianNum(int bArray[], int iFilterLen) 
 {
       int bTab[iFilterLen];

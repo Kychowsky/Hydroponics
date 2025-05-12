@@ -5,17 +5,23 @@
 
 //*for TDS Sensor
 #define VREF 5.0      // analog reference voltage(Volt) of the ADC
+#define TDS_PIN A1
+#define SCOUNT 30
 
 void setup() {
   //*Begin Serial Communication at 9600 BAUD 
   Serial.begin(9600);
-  initTempSensor();
+  init_tempSensor();
+  init_tdsSensor(TDS_PIN, VREF, SCOUNT);
 }
 
 void loop() {
 
-  //*Read Temp Code
+  //*Read Sensors
   float tempC = readTempC();
+  setTemp_tdsSensor(tempC);
+  float tdsSensorReading = getValue_tdsSensor();
+
 
 
 
