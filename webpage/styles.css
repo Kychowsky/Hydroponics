@@ -1,0 +1,19 @@
+body {
+    font-family: "Oswald", sans-serif;
+}
+
+h1 {
+    text-align: center; 
+}
+
+.sensor { 
+    margin: 10px 0; 
+    font-size: 1.2rem; }
+
+.label { 
+    font-weight: bold; 
+}
+
+#status { 
+    font-style: italic; 
+}

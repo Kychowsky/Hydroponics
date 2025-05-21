@@ -1,16 +1,9 @@
 #include <Arduino.h>
 
-//Wifi Setup
-#include <ESP8266WiFi.h>
-#include <PubSubClient.h>
-#include "mqtt_server.h"
-const char* ssid = "studniska";
-const char* password = "kangaroos";
-const char* mqtt_server = "10.0.0.249";
-
 //*Add Different Libraries for Initialization
 #include "temp_sensor.h"
 #include "tds_sensor.h"
+#include "server.h"
 
 //*for TDS Sensor
 #define VREF 5.0      // analog reference voltage(Volt) of the ADC
@@ -27,12 +20,9 @@ const char* mqtt_server = "10.0.0.249";
 
 void setup() {
   Serial.begin(9600);
-  
-  //init mqtt/wifi
-  Serial.println(ssid);
-  Serial.println(password);
-  setup_wifi(ssid, password);
-  mqqt_setup(mqtt_server);
+  //connect wifi/mqtt
+  setupServer();
+
 
   //*Initialize Sensors
   init_tempSensor();
@@ -43,37 +33,41 @@ void setup() {
 
 void loop() {
 
-  //Read Sensors
+  // //Read Sensors
+  // Serial.println(WiFi.localIP());
 
-  //Temperature Sensor
-  float tempC = readTempC();
-  //TDS Sensor
-  setTemp_tdsSensor(tempC);
-  update_tdsSensor();
-  float tdsSensorReading = getValue_tdsSensor();
-  //Water Level Sensor
-  int wtrLevelReached = digitalRead(WTRLEVEL_PIN);
+  // //Temperature Sensor
+  // float tempC = readTempC();
+  // //TDS Sensor
+  // setTemp_tdsSensor(tempC);
+  // update_tdsSensor();
+  // float tdsSensorReading = getValue_tdsSensor();
+  // //Water Level Sensor
+  // int wtrLevelReached = digitalRead(WTRLEVEL_PIN);
 
   
-  //*test code 
-  Serial.print("Temp Value: ");
-  Serial.print(tempC, 0);
-  Serial.println(" C");
+  // //*test code 
+  // Serial.print("Temp Value: ");
+  // Serial.print(tempC, 0);
+  // Serial.println(" C");
 
-  Serial.print("TDS Value: ");
-  Serial.print(tdsSensorReading, 0);
-  Serial.println(" ppm");
+  // Serial.print("TDS Value: ");
+  // Serial.print(tdsSensorReading, 0);
+  // Serial.println(" ppm");
 
-  Serial.print("Water level?");
-  if(wtrLevelReached)
-    Serial.print("At Water Level");
-  else
-    Serial.print("Not at Water Level");
+  // Serial.print("Water level?");
+  // if(wtrLevelReached)
+  //   Serial.print("At Water Level");
+  // else
+  //   Serial.print("Not at Water Level");
 
   delay(2000);
 
-  //test mqtt on esp
-  mqtt_loop();
+  // //test mqtt on esp
+  loopServer();
+  // float tds_value = 3;
+  // publish_sensor_data(tds_value);
+  
   
 
 

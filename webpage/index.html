@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hydroponics Sensor Dashboard</title>
+  <style>@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');</style>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h1>Hydroponics Sensor Dashboard</h1>
+  <div class="sensor">
+    <span class="label">Connection Status:</span> <span id="status">Connecting…</span>
+  </div>
+  <div class="sensor">
+    <span class="label">TDS:</span> <span id="tdsValue">--</span> ppm
+  </div>
+  <div class="sensor">
+    <span class="label">Temperature:</span> <span id="tempValue">--</span> °C
+  </div>
+  <div class="sensor">
+    <span class="label">pH Level:</span> <span id="phValue">--</span>
+  </div>
+
+  <!-- Paho MQTT WebSocket client -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.1.0/paho-mqtt.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
