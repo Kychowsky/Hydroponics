@@ -14,7 +14,7 @@ static float    _lastTds;
 
 
 //* Initalize all static values/arrays
-void init_tdsSensor(uint8_t analogPin, float VREF = 5.0, uint8_t sampleCount = 30){
+void init_tdsSensor(uint8_t analogPin, float VREF, uint8_t sampleCount){
   _pin         = analogPin;
   _vref        = VREF;
   _sampleCount       = sampleCount;

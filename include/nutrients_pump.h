@@ -1,3 +1,6 @@
+#ifndef NUTRIENTS_PUMP_H
+#define NUTRIENTS_PUMP_H
+
 #include <Arduino.h>
 
 enum GrowthStage {
@@ -12,6 +15,6 @@ enum GrowthStage {
 };
 
 
-void nutrient_injection(int PPM, GrowthStage stage){
+void nutrient_injection(int PPM, GrowthStage stage);
 
-}
+#endif

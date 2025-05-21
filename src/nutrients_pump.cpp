@@ -61,4 +61,5 @@ switch (stage) {
     targetMaxPPM = 200;
     break;
 }
+}
 

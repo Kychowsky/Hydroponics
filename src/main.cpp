@@ -1,13 +1,23 @@
 #include <Arduino.h>
+
+//Wifi Setup
 #include <ESP8266WiFi.h>
+#include <PubSubClient.h>
+#include "mqtt_server.h"
+const char* ssid = "studniska";
+const char* password = "kangaroos";
+const char* mqtt_server = "10.0.0.249";
+
 //*Add Different Libraries for Initialization
 #include "temp_sensor.h"
 #include "tds_sensor.h"
 
 //*for TDS Sensor
 #define VREF 5.0      // analog reference voltage(Volt) of the ADC
-#define TDS_PIN A1
+#define TDS_PIN A0
 #define SCOUNT 30
+
+
 
 //*for TEMP Sensor **likely combine with PH Sensor
 #define TEMP_PIN 2
@@ -17,19 +27,12 @@
 
 void setup() {
   Serial.begin(9600);
-
-  //*Initiate WIFI
-  Serial.println("\nConnecting to WiFi...");
-  WiFi.begin("SHAW-E291", "kangaroos");
-
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-
-  Serial.println("\nConnected!");
-  Serial.print("IP Address: ");
-  Serial.println(WiFi.localIP());
+  
+  //init mqtt/wifi
+  Serial.println(ssid);
+  Serial.println(password);
+  setup_wifi(ssid, password);
+  mqqt_setup(mqtt_server);
 
   //*Initialize Sensors
   init_tempSensor();
@@ -68,6 +71,10 @@ void loop() {
     Serial.print("Not at Water Level");
 
   delay(2000);
+
+  //test mqtt on esp
+  mqtt_loop();
+  
 
 
 }
