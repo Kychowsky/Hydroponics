@@ -3,5 +3,7 @@
 
 void setupServer();
 void loopServer();
+void reconnectWifi();
+void checkWifiStatus();
 
 #endif

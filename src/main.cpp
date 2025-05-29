@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
 //*Add Different Libraries for Initialization
-#include "temp_sensor.h"
+#include "ph-temp_sensor.h"
 #include "tds_sensor.h"
 #include "server.h"
 
@@ -21,8 +21,9 @@
 void setup() {
   Serial.begin(9600);
   //connect wifi/mqtt
+    Serial.print("TDS Value: ");
   setupServer();
-
+  Serial.print("TDS Value: ");
 
   //*Initialize Sensors
   init_tempSensor();
@@ -32,7 +33,8 @@ void setup() {
 }
 
 void loop() {
-
+  //on wifi drop and reconnect if dropped
+  checkWifiStatus();
   // //Read Sensors
   // Serial.println(WiFi.localIP());
 

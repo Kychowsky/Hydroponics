@@ -2,7 +2,7 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 #include "tds_sensor.h"
-#include "temp_sensor.h"
+#include "ph-temp_sensor.h"
 
 // — Wi-Fi creds —
 static const char* ssid     = "lukasz";
@@ -98,5 +98,19 @@ void loopServer() {
     Serial.printf("Published TDS=%.2f, Temp=%.2f", tds, temp);
     last = millis();
   }
+}
+
+void checkWifiStatus(){
+  if(WiFi.status() != WL_CONNECTED)
+  reconnectWifi();
+}
+
+void reconnectWifi(){
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print('.');
+  }
+  Serial.println("\nWi-Fi OK, IP=" + WiFi.localIP().toString());
 }
 

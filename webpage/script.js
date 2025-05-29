@@ -26,10 +26,12 @@ client.onMessageArrived = message => {
     case 'home/sensors/ph':
         document.getElementById('phValue').textContent = payload;
         break;
+    case 'home/errors':
+        document.getElementById('errorDisplay').textContent = payload;
     }
 };
 
-//when webpage successfully connects to server
+//when webpage successfully connects to
 function onConnect() {
     console.log('Connected to MQTT');
     document.getElementById('status').textContent = 'Connected';
