@@ -1,8 +1,6 @@
 #include "server.h"
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
-#include "tds_sensor.h"
-#include "ph-temp_sensor.h"
 
 // — Wi-Fi creds —
 static const char* ssid     = "lukasz";
